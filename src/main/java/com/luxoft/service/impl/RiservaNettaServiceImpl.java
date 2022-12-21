@@ -9,6 +9,7 @@ import com.luxoft.service.RiservaNettaService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,10 +26,10 @@ public class RiservaNettaServiceImpl implements RiservaNettaService {
                 .orElseThrow(() -> new RiservaNotFoundException(date));
         log.info("IN export - riserva found: {}", riservaByDate);
         RiservaNettaExporter exporter = new RiservaNettaExporter(riservaByDate);
-        try {
-            exporter.export(response);
+        try (XSSFWorkbook workbook = exporter.export();
+             var outputStream = response.getOutputStream()) {
+            workbook.write(outputStream);
         } catch (IOException e) {
-            log.error("IN export - error while exporting report: {}", e.getMessage());
             throw new ReportExportException(e);
         }
     }

@@ -3,12 +3,14 @@ package com.luxoft.exporter.builder;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 
 public class FontBuilder {
+    private static final String DEFAULT_FONT_NAME = "Book Antiqua";
+    private static final int DEFAULT_FONT_SIZE = 10;
     private XSSFFont font;
 
     public FontBuilder builder(XSSFFont font) {
         this.font = font;
-        this.font.setFontHeight(10);
-        this.font.setFontName("Book Antiqua");
+        this.font.setFontHeight(DEFAULT_FONT_SIZE);
+        this.font.setFontName(DEFAULT_FONT_NAME);
         return this;
     }
 
