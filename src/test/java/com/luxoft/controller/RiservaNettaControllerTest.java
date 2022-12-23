@@ -1,5 +1,6 @@
 package com.luxoft.controller;
 
+import com.luxoft.dto.ExportDataDto;
 import com.luxoft.service.RiservaNettaService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
 
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(controllers = {RiservaNettaController.class})
@@ -26,6 +27,8 @@ class RiservaNettaControllerTest {
     private RiservaNettaService riservaNettaService;
     @MockBean
     private HttpServletResponse response;
+    @MockBean
+    private ExportDataDto exportDataDto;
 
     private String contentType;
     private String headerKey;
@@ -49,6 +52,15 @@ class RiservaNettaControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentType(contentType))
                 .andExpect(MockMvcResultMatchers.header().string(headerKey, headerValue));
+    }
 
+    @Test
+    void getDataShouldBeSuccessfulWhenDateExists() throws Exception {
+        doReturn(exportDataDto).when(riservaNettaService).getData(date);
+
+        mockMvc.perform(get("/api/v1/riserva-netta/data/{date}", date))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"));
+        verify(riservaNettaService, times(1)).getData(date);
     }
 }

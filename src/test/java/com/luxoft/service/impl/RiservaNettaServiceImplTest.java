@@ -1,6 +1,8 @@
 package com.luxoft.service.impl;
 
+import com.luxoft.dto.ExportDataDto;
 import com.luxoft.exception.RiservaNotFoundException;
+import com.luxoft.mapper.MyMapper;
 import com.luxoft.model.RiservaNetta;
 import com.luxoft.repo.RiservaNettaRepository;
 import jakarta.servlet.ServletOutputStream;
@@ -29,6 +31,10 @@ class RiservaNettaServiceImplTest {
     private ServletOutputStream outputStream;
     @Mock
     private RiservaNetta riservaNetta;
+    @Mock
+    private MyMapper mapper;
+    @Mock
+    private ExportDataDto exportDataDto;
     @InjectMocks
     private RiservaNettaServiceImpl service;
 
@@ -43,7 +49,7 @@ class RiservaNettaServiceImplTest {
     }
 
     @Test
-    void shouldExportSuccessfullyWhenDateExists() throws IOException {
+    void exportShouldExportSuccessfullyWhenDateExists() throws IOException {
         doReturn(Optional.of(riservaNetta)).when(repository)
                 .findByDate(riservaNetta.getDate());
         doReturn(outputStream).when(response).getOutputStream();
@@ -55,7 +61,7 @@ class RiservaNettaServiceImplTest {
     }
 
     @Test
-    void shouldThrowErrorWhenDateNotFound() {
+    void exportShouldThrowErrorWhenDateNotFound() {
         doThrow(new RiservaNotFoundException(riservaNetta.getDate()))
                 .when(repository).findByDate(riservaNetta.getDate());
 
@@ -63,5 +69,18 @@ class RiservaNettaServiceImplTest {
                 service.export(riservaNetta.getDate(), response));
         verify(repository).findByDate(riservaNetta.getDate());
         verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    void getDataShouldGetDataSuccessfulyWhenDateExists() {
+        doReturn(Optional.of(riservaNetta)).when(repository)
+                .findByDate(riservaNetta.getDate());
+        doReturn(exportDataDto).when(mapper).riservaNettaToExportDataDto(riservaNetta);
+
+        service.getData(riservaNetta.getDate());
+
+        verify(repository, times(1)).findByDate(riservaNetta.getDate());
+        verify(mapper, times(1)).riservaNettaToExportDataDto(riservaNetta);
+        verifyNoMoreInteractions(repository, mapper);
     }
 }
