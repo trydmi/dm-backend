@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  dm-backend-app:
+    build: .
+    container_name: dm-backend-app
+    depends_on:
+      - dm-db
+    ports:
+      - target: 8080
+        published: 8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dm-db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  dm-db:
+    image: postgres
+    container_name: dm-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

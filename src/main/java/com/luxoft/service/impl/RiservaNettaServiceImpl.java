@@ -1,8 +1,10 @@
 package com.luxoft.service.impl;
 
+import com.luxoft.dto.ExportDataDto;
 import com.luxoft.exception.ReportExportException;
 import com.luxoft.exception.RiservaNotFoundException;
 import com.luxoft.exporter.RiservaNettaExporter;
+import com.luxoft.mapper.MyMapper;
 import com.luxoft.model.RiservaNetta;
 import com.luxoft.repo.RiservaNettaRepository;
 import com.luxoft.service.RiservaNettaService;
@@ -20,6 +22,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class RiservaNettaServiceImpl implements RiservaNettaService {
     private final RiservaNettaRepository repository;
+    private final MyMapper mapper;
 
     public void export(LocalDate date, HttpServletResponse response) {
         RiservaNetta riservaByDate = repository.findByDate(date)
@@ -32,5 +35,12 @@ public class RiservaNettaServiceImpl implements RiservaNettaService {
         } catch (IOException e) {
             throw new ReportExportException(e);
         }
+    }
+
+    @Override
+    public ExportDataDto getData(LocalDate date) {
+        RiservaNetta byDate = repository.findByDate(date)
+                .orElseThrow(() -> new RiservaNotFoundException(date));
+        return mapper.riservaNettaToExportDataDto(byDate);
     }
 }
