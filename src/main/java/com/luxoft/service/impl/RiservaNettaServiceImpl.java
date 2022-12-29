@@ -32,6 +32,7 @@ public class RiservaNettaServiceImpl implements RiservaNettaService {
         try (XSSFWorkbook workbook = exporter.export();
              var outputStream = response.getOutputStream()) {
             workbook.write(outputStream);
+            log.info("IN export - riserva exported successfully");
         } catch (IOException e) {
             throw new ReportExportException(e);
         }
@@ -41,6 +42,7 @@ public class RiservaNettaServiceImpl implements RiservaNettaService {
     public ExportDataDto getData(LocalDate date) {
         RiservaNetta byDate = repository.findByDate(date)
                 .orElseThrow(() -> new RiservaNotFoundException(date));
+        log.info("IN getData - riserva found: {}", byDate);
         return mapper.riservaNettaToExportDataDto(byDate);
     }
 }

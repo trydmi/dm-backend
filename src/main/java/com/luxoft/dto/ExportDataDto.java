@@ -56,5 +56,5 @@ public record ExportDataDto(
         Double htcsGoviesdmNet,
         Double htcsGoviesemNet,
         Double htcsCorpNet
-        ) {
+) {
 }
