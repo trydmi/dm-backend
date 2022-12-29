@@ -72,7 +72,7 @@ class RiservaNettaServiceImplTest {
     }
 
     @Test
-    void getDataShouldGetDataSuccessfulyWhenDateExists() {
+    void getDataShouldGetDataSuccessfullyWhenDateExists() {
         doReturn(Optional.of(riservaNetta)).when(repository)
                 .findByDate(riservaNetta.getDate());
         doReturn(exportDataDto).when(mapper).riservaNettaToExportDataDto(riservaNetta);
